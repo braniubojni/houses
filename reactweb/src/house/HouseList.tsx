@@ -4,6 +4,7 @@ import { HouseApi } from "./HouseApi";
 import { House } from "./types/house";
 import ActionDialog from "../common/ActionDialog";
 import { toCurrency } from "../common/helpers/currencyOptions";
+import HouseContext from "./house-context";
 
 
 const HouseList: FC = () => {
@@ -26,35 +27,37 @@ const HouseList: FC = () => {
 	}, []);
 
 	return (
-		<div>
-			<div className="row mb-2">
-				<h5 className="themeFontColor text-center">
-					Houses currently on the market
-				</h5>
-			</div>
-			{loader
-				? <Loader />
-				: <table className="table table-hover">
-					<thead>
-						<tr>
-							<th>Address</th>
-							<th>Country</th>
-							<th>Asking Price</th>
-						</tr>
-					</thead>
-					<tbody>
-						{houses.map(h => (
-							<tr key={h.id}>
-								<td>{h.address}</td>
-								<td>{h.country}</td>
-								<td>{toCurrency.format(h.price)}</td>
+		<HouseContext.Provider value={{ houses }}>
+			<div>
+				<div className="row mb-2">
+					<h5 className="themeFontColor text-center">
+						Houses currently on the market
+					</h5>
+				</div>
+				{loader
+					? <Loader />
+					: <table className="table table-hover">
+						<thead>
+							<tr>
+								<th>Address</th>
+								<th>Country</th>
+								<th>Asking Price</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
-			}
-			{errMsg && <ActionDialog title="Issue" msg={errMsg} />}
-		</div>
+						</thead>
+						<tbody>
+							{houses.map(h => (
+								<tr key={h.id}>
+									<td>{h.address}</td>
+									<td>{h.country}</td>
+									<td>{toCurrency.format(h.price)}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				}
+				{errMsg && <ActionDialog title="Issue" msg={errMsg} />}
+			</div>
+		</HouseContext.Provider>
 	);
 }
 
